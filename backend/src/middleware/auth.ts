@@ -32,8 +32,8 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const adminAuth = (req: Request, res: Response, next: NextFunction) => {
-  if (req.user?.role !== UserRole.ADMIN) {
+  if (req.user?.role !== UserRole.COMPANY) { // 假设管理员角色是 COMPANY
     return res.status(403).json({ message: '需要管理员权限' });
   }
   next();
-}; 
+};
