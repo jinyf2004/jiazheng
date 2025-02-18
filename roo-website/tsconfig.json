@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "paths": {
+      "@middleware/*": ["middleware/*"],
+      "@config/*": ["config/*"]
+    },
+    "types": ["@types/express"]
+  },
+  "include": ["src/**/*", "types/**/*"]
+}

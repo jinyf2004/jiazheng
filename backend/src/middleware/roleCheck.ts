@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 
-export const requireRole = (...roles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+export const checkRole = (roles: string[]) => 
+  (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
-      return res.status(401).json({ error: '用户未认证' });
+      return res.status(401).send('未经授权');
     }
+
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ error: '权限不足' });
+      return res.status(403).send('权限不足');
     }
+
     next();
   };
-};

@@ -1,35 +1,21 @@
-import { createClient, RedisClientType } from 'redis';
+import { createClient } from 'redis';
 
-const client: RedisClientType = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379',
+const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+
+export const redisClient = createClient({
+  url: REDIS_URL
 });
 
-client.on('error', (err) => console.error('Redis Client Error', err));
-
-export const connectRedis = async () => {
+export async function connectRedis() {
   try {
-    await client.connect();
-    console.log('Redis连接成功');
-  } catch (error) {
-    console.error('Redis连接失败:', error);
+    await redisClient.connect();
+    console.log(`Connected to Redis at ${REDIS_URL}`);
+  } catch (err) {
+    console.error('Redis Connection Error:', err);
     process.exit(1);
   }
-};
+}
 
-export const getCache = async (key: string): Promise<string | null> => {
-  try {
-    const data = await client.get(key);
-    return data;
-  } catch (err) {
-    throw new Error(`Failed to get cache for key ${key}: ${err}`);
-  }
-};
-
-export const setCache = async (key: string, value: string, ttl: number): Promise<string | null> => {
-  try {
-    const reply = await client.set(key, value, { EX: ttl });
-    return reply;
-  } catch (err) {
-    throw new Error(`Failed to set cache for key ${key}: ${err}`);
-  }
-};
+redisClient.on('error', (err) => {
+  console.error('Redis Client Error:', err);
+});

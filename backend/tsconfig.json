@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "NodeNext",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./src/utils"],
+    "baseUrl": "./src",
+    "paths": {
+      "@utils/*": ["utils/*"]
+    },
     "moduleResolution": "NodeNext",
-    "allowSyntheticDefaultImports": true
+    "esModuleInterop": true,
+    "target": "ES2015",
+    "outDir": "./dist",
+    "rootDirs": ["src"],
+    "skipLibCheck": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*",
+    "src/types/**/*",
+    "patcher.js",
+    "../types.d.ts"
+  ]
 }

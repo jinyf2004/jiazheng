@@ -1,39 +1,33 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { UserRole } from '../models/User';
+import { User } from '../models/User.js';
 
-interface JwtPayload {
-  userId: string;
-  role: string;
-}
+const JWT_SECRET = process.env.JWT_SECRET || 'your_fallback_secret';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: JwtPayload;
-    }
-  }
-}
+export const authenticateToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.split(' ')[1];
 
-export const auth = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-
-  if (!token) {
-    return res.status(401).json({ message: '无访问权限' });
-  }
+  if (!token) return res.sendStatus(401);
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as JwtPayload;
-    req.user = decoded;
+    const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload;
+    const user = await User.findById(decoded.userId);
+  
+    if (!user) return res.sendStatus(403);
+  
+    req.user = {
+      id: user._id.toString(),
+      role: user.role
+    };
+  
     next();
-  } catch (error) {
-    res.status(401).json({ message: '无效的token' });
+  } catch (err) {
+    console.error('JWT Verification Error:', err);
+    return res.sendStatus(403);
   }
-};
-
-export const adminAuth = (req: Request, res: Response, next: NextFunction) => {
-  if (req.user?.role !== UserRole.COMPANY) { // 假设管理员角色是 COMPANY
-    return res.status(403).json({ message: '需要管理员权限' });
-  }
-  next();
 };

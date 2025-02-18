@@ -11,9 +11,11 @@
     "baseUrl": "./",
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
+    "types": ["jest", "ioredis"]
   },
   "include": [
-    "backend/**/*.ts"
+    "backend/**/*.ts",
+    "setupTests.ts"
   ]
 }

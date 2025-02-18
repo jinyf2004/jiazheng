@@ -1,0 +1,14 @@
+jobs:
+  deploy:
+    services:
+      redis:
+        image: redislabs/redis-stack-server:latest
+        ports: ["6379:6379"]
+      
+    steps:
+      - name: Run Integration Tests
+        env:
+          REDIS_HOST: localhost
+        run: |
+          npm run test:integration
+          curl -X POST http://localhost:3000/health | jq -e '.redis == "healthy"'

@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 类型检查+代码规范+安全扫描
+npm run type-check && 
+npx eslint . --ext .ts && 
+npx npm audit --audit-level=moderate
